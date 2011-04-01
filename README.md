@@ -12,7 +12,7 @@ Exemplo
     $videos = new vlog("seu_token");
 
     #Pega todos os resultados do canal "Jornalismo"
-    $reposta = $videos->getCanal("jornalismo");
+    $reposta = $videos->getChannel("jornalismo");
 
     #Imprime o resultado na tela
     echo "<pre>";
