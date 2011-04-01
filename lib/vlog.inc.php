@@ -1,16 +1,50 @@
 <?php
-
+/**
+ * Wrapper Videolog - Wrapper para facilitar o uso da API Videolog
+ *
+ * @author Alê Borba <ale.alvesborba@gmail.com>
+ * @license <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPLv3 - GNU General Public License - Version 3.0</a>
+ * @version 0.0.1
+ */
+/**
+ * Classe vlog()
+ * <pre>
+ * Classe que faz a interface da API com o usuário.
+ * </pre>
+ */
 class vlog {
-
-    private $videos;
+    /**
+     * Variável que armazena o token de autenticação
+     *
+     * @var string
+     * @access private
+     */
     private $token;
-    
-    function __construct($token) {
+
+    /**
+     * Method __construct()
+     * <pre>
+     * Método construtor que armazena o token para as consultas
+     * </pre>
+     * @param string $token Token usado na autenticação das requisições
+     * @access public
+     */
+    public function __construct($token) {
         $this->token = $token;
     }
 
-    public function getCanal($nome){
-        $canal_id = $this->getCanalID($nome);
+    /**
+     * Method getChannel()
+     * <pre>
+     * Metodo que retorna os vídeos de um determinado canal.
+     * Leia o arquivo README para saber quais as opções disponíveis.
+     * </pre>
+     * @param string $nome Nome do canal que deseja consultar
+     * @return object
+     * @access public
+     */
+    public function getChannel($nome){
+        $canal_id = $this->getChannelID($nome);
         
         $url = "http://api.videolog.tv/canal/{$canal_id}/videos.json";
 
@@ -21,7 +55,16 @@ class vlog {
         return $videos;
     }
 
-    private function getCanalID($nome) {
+    /**
+     * Method getChannelID()
+     * <pre>
+     * Método que identifica o ID do canal selecionado pelo usuário
+     * </pre>
+     * @param string $nome Nome do canal selecionado
+     * @return integer
+     * @access private
+     */
+    private function getChannelID($nome) {
         $id_canais = array(
             'animação' => 2,
             'autos e veículos' => 3,
@@ -59,6 +102,18 @@ class vlog {
         }
     }
 
+    /**
+     * Method getUserVideos()
+     * <pre>
+     * Método que retorna os vídeos do usuário selecionado.
+     * Se o parâmetro $favoritos for 'true', serão retornados os vídeos
+     * favoritos do usuário selecionado.
+     * </pre>
+     * @param string $user_id ID do usuário que se deseja buscar
+     * @param boolean $favoritos Flag de controle para a opção favoritos.
+     * @return object
+     * @access public
+     */
     public function getUserVideos($user_id, $favoritos = false){
 
         if ($favoritos) {
@@ -75,6 +130,18 @@ class vlog {
         return $videos;
     }
 
+    /**
+     * Method search()
+     * <pre>
+     * Metodo utilizado para fazer buscas dentro do Videolog
+     * </pre>
+     * @param string $termo O termo a ser procurado. E.g. 'copa do mundo'(Obrigatório)
+     * @param string $canal Canal usado pra reduzir as buscas
+     * @param string $user_id ID do usuário para reduzir as buscas
+     * @param integer $quantidade Quantidade de vídeos que serão retornados
+     * @return object
+     * @access public
+     */
     public function search($termo, $canal = null, $user_id = null, $quantidade = null) {
 
         $url = "http://api.videolog.tv/video/busca.json?";
@@ -87,7 +154,7 @@ class vlog {
         }
 
         if ($canal) {
-            $canal = $this->getCanalID($canal);
+            $canal = $this->getChannelID($canal);
             $url .= "&canal={$canal}";
         }
 
@@ -106,6 +173,15 @@ class vlog {
         return $videos;
     }
 
+    /**
+     * Method getVideo()
+     * <pre>
+     * Método que retorna as informações de um determinado vídeo
+     * </pre>
+     * @param string $id_video ID do vídeo que será pesquisado
+     * @return object
+     * @access public
+     */
     public function getVideo($id_video) {
         $url = "http://api.videolog.tv/video/{$id_video}.json";
 
@@ -116,6 +192,61 @@ class vlog {
         return $videos;
     }
 
-}
+    /**
+     * Method getRelated()
+     * <pre>
+     * Método que retorna a lista de vídeos relacionados ao informado.
+     * </pre>
+     * @param string $id_video ID do video base da consulta
+     * @return object
+     * @access public
+     */
+    public function getRelated($id_video) {
+        $url = "http://api.videolog.tv/video/{$id_video}/videosRelacionados.json";
 
+        $con = new Connection($url, $this->token);
+
+        $videos = $con->getResposta();
+
+        return $videos;
+    }
+
+    /**
+     * Method getVideoComments()
+     * <pre>
+     * Método que retorna os comentários do vídeo informado.
+     * </pre>
+     * @param string $id_video ID do video base da consulta
+     * @return object
+     * @access public
+     */
+    public function getVideoComments($id_video) {
+        $url = "http://api.videolog.tv/video/{$id_video}/comentarios.json";
+
+        $con = new Connection($url, $this->token);
+
+        $cometarios = $con->getResposta();
+
+        return $cometarios;
+    }
+
+    /**
+     * Method getComment()
+     * <pre>
+     * Método que retorna as informações do comentário informado.
+     * </pre>
+     * @param string $id_comment ID do comentário
+     * @return object
+     * @access public
+     */
+    public function getComment($id_comment) {
+        $url = "http://api.videolog.tv/comentario/{$id_comment}.json";
+
+        $con = new Connection($url, $this->token);
+
+        $comentarios = $con->getResposta();
+
+        return $comentarios;
+    }
+}
 ?>
