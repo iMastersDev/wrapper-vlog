@@ -28,7 +28,7 @@ Digite seu usuario e senha do Videolog e clique no botão "GERAR" e seu token ir
 Métodos disponíveis
 -----------------------------
 
-getCanal($nome)
+getChannel($nome)
 ----------------------
 Retorna todos os vídeos do canal informado no parâmetro $nome.
 
@@ -74,3 +74,15 @@ $quantidade = Indica a quantidade de vídeos que serão retornados.
 getVideo($id_video)
 -----------------------
 Retorna as informações do vídeo determinado pelo parâmetro $id_video
+
+getRelated($id_video)
+-----------------------
+Retorna os videos relacioandos ao vídeo indicado no parametro $id_video
+
+getVideoComments($id_video)
+-----------------------------
+Retorna os comentários do vídeo indicado no parâmetro $id_video
+
+getComment($id_comment)
+------------------------
+Retorna as informações do cometário indicado no parâmetro $id_comment
